@@ -67,6 +67,29 @@ int _write(int file, char *ptr, int len) {
   return len;
 }
 
+void Init_ADC_BareMetal(void) {
+  //Port A (0)
+  RCC->AHB1ENR |= (1 << 0);
+
+  //ADC1 (8)
+  RCC->APB2ENR |= (1 << 8);
+
+  //Analog Mode (3 für Pin 0)
+  GPIOA->MODER |= (3 << 0);
+
+  //channel 0 (0 in bits 0-4)
+  ADC1->SQR3 &= ~(0x1F << 0);
+
+  //1 messung (0 in bits 20-23)
+  ADC1->SQR1 &= ~(0xF << 20);
+
+  //84 zyklen sampeln (100 in bits 0-2)
+  ADC1->SMPR2 |= (4 << 0);
+
+  //einschalten (bit 0)
+  ADC1->CR2 |= (1 << 0);
+}
+
 /* USER CODE END 0 */
 
 /**
@@ -100,6 +123,11 @@ int main(void)
   MX_GPIO_Init();
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
+
+  // SEGGER_SYSVIEW_Conf();
+  // SEGGER_SYSVIEW_Start();
+
+  Init_ADC_BareMetal();
 
   /* USER CODE END 2 */
 

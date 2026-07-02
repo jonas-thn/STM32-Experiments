@@ -79,7 +79,8 @@ set(MX_LINK_DIRS
 set(MX_LINK_LIBS 
     STM32_Drivers
     ${TOOLCHAIN_LINK_LIBRARIES}
-    FreeRTOS	
+    FreeRTOS
+	
 )
 # Interface library for includes and symbols
 add_library(stm32cubemx INTERFACE)
@@ -96,6 +97,13 @@ target_link_libraries(STM32_Drivers PUBLIC stm32cubemx)
 add_library(FreeRTOS OBJECT)
 target_sources(FreeRTOS PRIVATE ${FreeRTOS_Src})
 target_link_libraries(FreeRTOS PUBLIC stm32cubemx)
+
+target_include_directories(FreeRTOS PRIVATE 
+    "${CMAKE_CURRENT_SOURCE_DIR}/../../ThirdParty/SEGGER/RTT"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../../ThirdParty/SEGGER/SYSVIEW"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../../ThirdParty/SEGGER/Config"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../../ThirdParty/SEGGER/OS"
+)
 
 # Add STM32CubeMX generated application sources to the project
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE ${MX_Application_Src})

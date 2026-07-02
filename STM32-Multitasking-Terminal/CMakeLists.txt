@@ -45,9 +45,23 @@ target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
 # Add sources to executable
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user sources here
+    "${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/SEGGER/RTT/SEGGER_RTT.c"
+    "${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/SEGGER/RTT/SEGGER_RTT_printf.c"
+    "${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/SEGGER/RTT/SEGGER_RTT_ASM_ARMv7M.S"
+    "${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/SEGGER/SYSVIEW/SEGGER_SYSVIEW.c"
+    "${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c"
+    "${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/SEGGER/Config/SEGGER_SYSVIEW_Config_FreeRTOS.c"
 )
 
 # Add include paths
+include_directories(
+    # Add user defined include paths
+    "${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/SEGGER/RTT"
+    "${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/SEGGER/SYSVIEW"
+    "${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/SEGGER/Config"
+    "${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/SEGGER/OS"
+)
+
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user defined include paths
 )

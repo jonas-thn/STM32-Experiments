@@ -130,9 +130,15 @@ void StartDefaultTask(void *argument)
   /* Infinite loop */
   for(;;)
   {
-    printf("[Sensor] Priorität Normal\r\n");
+    ADC1->CR2 |= (1 << 30); //start
 
-    osDelay(1000);
+    while(!(ADC1->SR & (1 << 1))) {}
+
+    uint16_t raw_value = ADC1->DR;
+
+    printf("[Bare-Metal] Poti-Wert: %u\r\n", raw_value);
+
+    osDelay(500);
   }
   /* USER CODE END StartDefaultTask */
 }
