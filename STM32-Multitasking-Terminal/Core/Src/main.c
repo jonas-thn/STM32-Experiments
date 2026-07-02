@@ -48,6 +48,8 @@
 
 /* USER CODE BEGIN PV */
 
+uint16_t adc_buffer[1];
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -88,6 +90,51 @@ void Init_ADC_BareMetal(void) {
 
   //einschalten (bit 0)
   ADC1->CR2 |= (1 << 0);
+
+  //8: dma, 9: kontinuierliche requests
+  ADC1->CR2 |= (1 << 8) | (1 << 9);
+}
+
+void Init_DMA_BareMetal(void) {
+  //dma2 (22)
+  RCC->AHB1ENR |= (1 << 22);
+
+  //deaktivieren für config
+  DMA2_Stream0->CR &= ~(1 << 0);
+
+  //hardware bestätigt deaktivierung
+  while (DMA2_Stream0->CR & (1 << 0)); 
+
+  //peripherie adresse festlegen
+  DMA2_Stream0->PAR = (uint32_t)&ADC1->DR; 
+
+  //speicher adresse festlegen
+  DMA2_Stream0->M0AR = (uint32_t)adc_buffer; 
+
+  //anzahl pakete pro register
+  DMA2_Stream0->NDTR = 1;
+
+  //control register reset (pheripheral to memory & chnannel 0 default)
+  DMA2_Stream0->CR = 0;
+
+  //perhiperal size: 16-bit ist 01 in bits 11-12
+  DMA2_Stream0->CR |= (1 << 11);
+
+  //memory size: 16-bit ist 01 in bits 13-14
+  DMA2_Stream0->CR |= (1 << 13);
+
+  //circiular mode: bit 8
+  DMA2_Stream0->CR |= (1 << 8);
+
+  //transfer complete interrupt enabe (bit 4)
+  DMA2_Stream0->CR |= (1 << 4); 
+
+  //aktivieren (bit 0)
+  DMA2_Stream0->CR |= (1 << 0);
+
+  NVIC_SetPriority(DMA2_Stream0_IRQn, 5); 
+  
+  NVIC_EnableIRQ(DMA2_Stream0_IRQn);
 }
 
 /* USER CODE END 0 */
@@ -128,6 +175,7 @@ int main(void)
   // SEGGER_SYSVIEW_Start();
 
   Init_ADC_BareMetal();
+  Init_DMA_BareMetal();
 
   /* USER CODE END 2 */
 
@@ -197,6 +245,19 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
+
+void DMA2_Stream0_IRQHandler(void) {
+    
+    //interrupt von channel 0 transfer complete prüfen
+    if (DMA2->LISR & (1 << 5)) {
+        
+        //interrupt clear
+        DMA2->LIFCR = (1 << 5);
+        
+        //sensor task flag senden
+        osThreadFlagsSet(SensorTaskHandle, 0x01);
+    }
+}
 
 /* USER CODE END 4 */
 

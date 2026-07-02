@@ -132,11 +132,10 @@ void StartDefaultTask(void *argument)
   {
     ADC1->CR2 |= (1 << 30); //start
 
-    while(!(ADC1->SR & (1 << 1))) {}
+    //auf flag warten 
+    osThreadFlagsWait(0x01, osFlagsWaitAny, osWaitForever);
 
-    uint16_t raw_value = ADC1->DR;
-
-    printf("[Bare-Metal] Poti-Wert: %u\r\n", raw_value);
+    printf("[Bare-Metal] Poti-Wert: %u\r\n", adc_buffer[0]);
 
     osDelay(500);
   }

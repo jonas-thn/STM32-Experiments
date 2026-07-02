@@ -28,6 +28,7 @@ extern "C" {
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f4xx_hal.h"
+#include "cmsis_os2.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -59,6 +60,9 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 
 /* USER CODE BEGIN Private defines */
+
+extern uint16_t adc_buffer[1];
+extern osThreadId_t SensorTaskHandle;
 
 /* USER CODE END Private defines */
 
