@@ -1,3 +1,5 @@
+#cmake -B build -G Ninja -DCMAKE_TOOLCHAIN_FILE=arm-toolchain.cmake
+
 cmake_minimum_required(VERSION 3.15)
 project(Custom_Setup C ASM)
 
@@ -9,6 +11,10 @@ set(CMAKE_ASM_FLAGS "${MCU_FLAGS} -g" CACHE INTERNAL "ASM Flags")
 
 set(SOURCES
     src/main.c
+    src/startup.c
 )
 
 add_executable(${PROJECT_NAME}.elf ${SOURCES})
+target_link_options(${PROJECT_NAME}.elf PRIVATE -T "${CMAKE_SOURCE_DIR}/STM32F407VG_FLASH.ld")
+
+
