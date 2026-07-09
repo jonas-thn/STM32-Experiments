@@ -4,7 +4,7 @@
         {
             "name": "Cortex Debug: STM32F407",
             "cwd": "${workspaceFolder}",
-            "executable": "${command:cmake.launchTargetPath}",
+            "executable": "${workspaceFolder}/build/Custom_Setup.elf",
             "request": "launch",
             "type": "cortex-debug",
             "runToEntryPoint": "main",
